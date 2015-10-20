@@ -1,0 +1,56 @@
+# Visualizing-product-relationships-in-a-market-Basket-analysis
+
+txn_data<-read.csv("Retail_Data.csv")
+
+# Initializing vectors
+ A <- numeric(0)
+ B <- numeric(0)
+ C <- numeric(0)
+ D <- numeric(0)
+ E <- numeric(0)
+ F <- numeric(0)
+ G <- numeric(0)
+ H <- numeric(0)
+ I <- numeric(0)
+ #Preparing the flag metrics
+ for ( i in 1:nrow(txn_data))
+ {
+ if (txn_data$Prod1[i] == "A") A[i] <- 1 else A[i]<-0
+ if (txn_data$Prod1[i] == "B") B[i] <- 1 else B[i]<-0
+ if (txn_data$Prod1[i] == "C") C[i] <- 1 else C[i]<-0
+ if (txn_data$Prod1[i] == "D") D[i] <- 1 else D[i]<-0
+ if (txn_data$Prod2[i] == "E") E[i] <- 1 else E[i]<-0
+ if (txn_data$Prod2[i] == "F") F[i] <- 1 else F[i]<-0
+ if (txn_data$Prod2[i] == "G") G[i] <- 1 else G[i]<-0
+ if (txn_data$Prod3[i] == "H") H[i] <- 1 else H[i]<-0
+ if (txn_data$Prod3[i] == "I") I[i] <- 1 else I[i]<-0
+ }
+ final.mat <- rbind(A,B,C,D,E,F,G,H,I)
+ 
+ # Creating the relationship matrix
+ termMatrix <- final.mat %*% t(final.mat)
+ # Creating the graphs
+ library(igraph)
+ # build a graph from the above matrix
+ g <- graph.adjacency(termMatrix, weighted=T, mode = "undirected")
+ # remove loops
+ g <- simplify(g)
+ # set labels and degrees of vertices
+ V(g)$label <- V(g)$name
+ V(g)$degree <- degree(g)
+ # set seed to make the layout reproducible
+ set.seed(3952)
+ layout1 <- layout.fruchterman.reingold(g)
+ plot(g, layout=layout1)
+ plot(g, layout=layout.kamada.kawai)
+ tkplot(g, layout=layout.kamada.kawai)
+ 
+ 
+ E(g)$color <- rgb(.5, .5, 0, egam)
+ E(g)$width <- egam
+ # plot the graph in layout1
+ plot(g, layout=layout1)
+ tkplot(g, layout=layout.kamada.kawai)
+ 
+ 
+ 
